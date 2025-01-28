@@ -3,21 +3,27 @@ import { useState } from "react";
 import "../ToDoList/ToDoList.scss";
 
 export default function ToDoList({ title }) {
-  const [task, setTask] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [saisie, setSaisie] = useState("");
 
   const addTask = () => {
     if (saisie) {
-      setTask([...task, { text: saisie, completed: false }]);
+      const newTask = [...tasks, { text: saisie, completed: false }];
+      setTasks(newTask);
       setSaisie("");
     }
   };
 
   const toggleTask = (index) => {
-    const updateTask = task.map((tasks, i) =>
-      i === index ? { ...tasks, completed: !tasks.completed } : tasks
+    const updateTask = tasks.map((task, i) =>
+      i === index ? { ...task, completed: !task.completed } : task
     );
-    setTask(updateTask);
+    setTasks(updateTask);
+  };
+
+  const updateTask = () => {
+    const update = tasks.filter((task) => !task.completed);
+    setTasks(update);
   };
 
   return (
@@ -29,22 +35,28 @@ export default function ToDoList({ title }) {
           value={saisie}
           onChange={(e) => setSaisie(e.target.value)}
           className="todolist__search--saisie"
+          placeholder="Ajouter une tâche"
         />
-        <button onClick={addTask} className="todolist__search--btn">
+      </div>
+      <div className="todolist__button">
+        <button onClick={addTask} className="todolist__button--btn">
           Ajouter
+        </button>
+        <button onClick={updateTask} className="todolist__button--btn">
+          Supprimer
         </button>
       </div>
       <ul className="todolist__list">
-        {task.map((tasks, index) => (
+        {tasks.map((task, index) => (
           <li key={index} className="todolist__list--item">
             <label>
               <input
                 type="checkbox"
-                checked={tasks.completed}
+                checked={task.completed}
                 onChange={() => toggleTask(index)}
               />
-              <span className={tasks.completed ? "completed" : ""}>
-                {tasks.text}
+              <span className={task.completed ? "completed" : ""}>
+                {task.text}
               </span>
             </label>
           </li>
